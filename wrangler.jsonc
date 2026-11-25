@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "permit-to-work",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-03-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "permit-to-work",
+      "database_id": "local-permit-to-work"
+    }
+  ],
+  "vars": {
+    "SESSION_SECRET": "dev-only-secret-change-me-in-production"
+  }
+}
