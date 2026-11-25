@@ -171,6 +171,19 @@ export default function NewPermitForm({
     setConflict(null);
     setFieldErrors([]);
 
+    // datetime fields hold a local "YYYY-MM-DDTHH:mm" from the input; the server is UTC, so send
+    // a real instant or a 17:45 IST reading is read as 17:45 UTC and rejected as "in the future".
+    const isoTypeData = Object.fromEntries(
+      Object.entries(typeData).map(([key, value]) => {
+        const field = typeDef.fields.find((item) => item.key === key);
+        if (field?.kind === "datetime" && typeof value === "string" && value) {
+          const parsed = new Date(value);
+          return [key, Number.isNaN(parsed.getTime()) ? value : parsed.toISOString()];
+        }
+        return [key, value];
+      }),
+    );
+
     const payload = {
       type,
       areaId,
@@ -183,7 +196,7 @@ export default function NewPermitForm({
       hazards,
       ppe,
       precautions,
-      typeData,
+      typeData: isoTypeData,
       submit,
       acknowledgeConflict,
     };
@@ -524,11 +537,14 @@ export default function NewPermitForm({
         {error ? (
           <div className="notice" data-tone="danger" style={{ marginTop: 14 }}>
             {error}
-            {fieldErrors.length ? (
+            {fieldErrors.filter((item) => item.message !== error).length ? (
               <ul className="small" style={{ margin: "6px 0 0", paddingLeft: 18 }}>
-                {fieldErrors.slice(0, 6).map((item, index) => (
-                  <li key={`${item.field}-${index}`}>{item.message}</li>
-                ))}
+                {fieldErrors
+                  .filter((item) => item.message !== error)
+                  .slice(0, 6)
+                  .map((item, index) => (
+                    <li key={`${item.field}-${index}`}>{item.message}</li>
+                  ))}
               </ul>
             ) : null}
           </div>

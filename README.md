@@ -20,6 +20,10 @@ bun run dev        # http://localhost:3000
 The local dev server needs a D1 binding; `freebuff.wrangler.jsonc` provides one (Miniflare keeps the
 SQLite file under `.wrangler/`). There is nothing else to configure and no environment file to fill in.
 
+**No external services and no API keys are required** — no SaaS account, no third-party API, no
+`.env`; the only secret is a `SESSION_SECRET` string (a dev placeholder is committed, and the live
+deployment has its own random one), and the database is D1, which ships with the Worker runtime.
+
 That is the whole setup. On the first request the app applies its migrations, then seeds two plants,
 five areas, six equipment items, four users and eleven permits spread across every status — including
 one active permit that expires inside the next two hours and two permits waiting for a signature.
