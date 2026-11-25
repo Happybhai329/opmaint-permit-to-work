@@ -28,6 +28,11 @@ That is the whole setup. On the first request the app applies its migrations, th
 five areas, six equipment items, four users and eleven permits spread across every status — including
 one active permit that expires inside the next two hours and two permits waiting for a signature.
 
+Those windows are relative to the moment of seeding, so on a long-lived deployment the permits age out
+and the dashboard eventually has nothing live. `npm run demo:refresh` puts one back: it raises a
+hot-work permit through the public API, has both approvers sign it and starts the work, so the
+countdown and the audit trail are real rather than hand-edited rows.
+
 ```bash
 bun run test       # 42 tests: state machine + permission rules + type validation
 bun run typecheck
@@ -43,7 +48,8 @@ bun run build
 | Safety Officer | `arjun@opmaint.test` | `permit1234` | Approve anything, suspend, grant extensions, verify closures |
 | Admin | `divya@opmaint.test` | `permit1234` | Everything except approve their own permit |
 
-A useful 60-second tour: sign in as **Ravi** → open `PTW-2026-0001` (active, expiring) → sign in as
+A useful 60-second tour: sign in as **Ravi** → open the permit marked **Active** (`PTW-2026-0001` in
+the seed) → sign in as
 **Meena** → `/approvals` shows only Assembly Line A work → sign in as **Arjun** → suspend the live
 permit, then try to approve a permit Ravi raised for Utility Block.
 
